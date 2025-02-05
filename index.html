@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rick and Morty API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    input {
+      padding: 10px;
+      margin: 20px;
+      width: 300px;
+      font-size: 16px;
+    }
+    .character-info {
+      margin-top: 20px;
+      text-align: center;
+    }
+    img {
+      max-width: 200px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Zoek een Personage van Rick and Morty</h1>
+  <input type="text" id="character-name" placeholder="Voer de naam van het personage in">
+  <button onclick="searchCharacter()">Zoeken</button>
+
+  <div class="character-info" id="character-info"></div>
+
+  <script>
+    async function searchCharacter() {
+      const name = document.getElementById('character-name').value;
+      const characterInfoDiv = document.getElementById('character-info');
+
+      if (!name) {
+        characterInfoDiv.innerHTML = 'Voer een naam in om te zoeken.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/characters/${name}`);
+        if (response.ok) {
+          const character = await response.json();
+          characterInfoDiv.innerHTML = `
+            <h2>${character.name}</h2>
+            <p>Status: ${character.status}</p>
+            <p>Species: ${character.species}</p>
+            <p>Gender: ${character.gender}</p>
+            <p>Origin: ${character.origin.name}</p>
+            <img src="${character.image}" alt="${character.name}">
+          `;
+        } else {
+          characterInfoDiv.innerHTML = 'Personage niet gevonden.';
+        }
+      } catch (error) {
+        characterInfoDiv.innerHTML = 'Er is iets mis gegaan bij het ophalen van het personage.';
+      }
+    }
+  </script>
+</body>
+</html>
